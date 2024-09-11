@@ -3,7 +3,7 @@ from CFML_api.API_Reflections_Utilities import ReflectionList
 import numpy as np
 
 cellv = np.asarray([5,5,8], dtype='float32')
-angl = np.asarray([90,90,80], dtype='float32')
+angl = np.asarray([90,90,90], dtype='float32')
 
 cell = CFML_api.Cell(cellv, angl)
 
@@ -32,9 +32,22 @@ dat = [
 'Backgd       50.000']
 
 job_info = CFML_api.JobInfo(dat)
-a=CFML_api.SpaceGroup(5)
+a=CFML_api.SpaceGroup(1)
 
 reflection_list = ReflectionList(cell=cell, spg=a, lfriedel=True, job=job_info)
-# reflection_list.compute_structure_factors(a, atom_list, job_info)
-reflection_list.compute_af0(a, atom_list, job_info)
-# print(reflection_list.print_description())
+#reflection_list.compute_structure_factors(a, atom_list, job_info)
+data_dict = reflection_list.compute_af0(a, atom_list, job_info)
+#print(reflection_list.print_description())
+
+# 辞書データからaf0の1次元配列を取得
+af0_1d = data_dict['af0']  # 'data_dict' が辞書オブジェクト
+
+# 1次元目と2次元目のサイズ
+n_atoms = len(data_dict['atom'])
+n_reflections = len(data_dict['h'])
+
+# af0の2次元配列に復元
+af0_2d = np.array(af0_1d).reshape(n_atoms, n_reflections)
+
+print(af0_2d[4])
+print(data_dict['h'])
